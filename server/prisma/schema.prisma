@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String  @id @default(cuid())
+  name         String?
+  surname      String?
+  email        String  @unique
+  password     String
+  role         Role    @default(USER)
+  status       Status  @default(PENDING)
+  refreshToken String? @unique
+
+  rating           Rating[]
+  courseEnrollment CourseEnrollment[]
+  completedLesson  CompletedLesson[]
+
+  coursesCreated Course[] @relation("CreatedCourses")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Course {
+  id             String  @id @default(cuid())
+  title          String
+  description    String
+  price          Float
+  thumbnail      String
+  courseVideoUrl String  @default("https://www.youtube.com/watch?v=Mxf0Hd-Bih0")
+  isPublished    Boolean @default(false)
+
+  categories       Category[]         @relation("CourseCategories") // Çoktan çoğa ilişki
+  section          Section[]
+  courseEnrollment CourseEnrollment[]
+  rating           Rating[]
+
+  instructorId String
+  instructor   User   @relation("CreatedCourses", fields: [instructorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id   String @id @default(cuid())
+  name String
+  slug String
+  icon String
+
+  courses Course[] @relation("CourseCategories") // Çoktan çoğa ilişki
+}
+
+model Section {
+  id    String @id @default(cuid())
+  title String
+
+  chapter Chapter[]
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Chapter {
+  id          String  @id @default(cuid())
+  title       String
+  videoUrl    String?
+  pdfUrl      String?
+  isPublished Boolean @default(false)
+  isFree      Boolean @default(false)
+  position    Int?
+
+  quizzes         Quiz[]
+  completedLesson CompletedLesson[]
+
+  sectionId String
+  section   Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Quiz {
+  id    String @id @default(cuid())
+  title String
+
+  questions Question[]
+
+  chapterId String
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+}
+
+model Question {
+  id      String @id @default(cuid())
+  content String
+  answer  String
+
+  options Options[]
+
+  quizId String
+  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+model Options {
+  id      String @id @default(cuid())
+  content String
+
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model CourseEnrollment {
+  id       String @id @default(cuid())
+  userId   String
+  courseId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  enrolledAt DateTime @default(now())
+}
+
+model CompletedLesson {
+  id        String @id @default(cuid())
+  userId    String
+  chapterId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  completedAt DateTime @default(now())
+}
+
+// Backend Henüz Hazırlanmadı
+model Rating {
+  id       String  @id @default(cuid())
+  rating   Decimal @default(0) @db.Decimal(2, 1) // 0.0 ile 5.0 arasında
+  review   String?
+  courseId String
+  userId   String
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  USER
+  SUPER_ADMIN
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
