@@ -15,7 +15,7 @@ function generateToken(userId: string, email: string, role: string) {
     },
     process.env.JWT_SECRET!,
     {
-      expiresIn: "60m", // 1 hour
+      expiresIn: "1h", // 1 hour
     }
   );
   const refreshToken = uuidv4();
@@ -123,6 +123,10 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
       // Set access and refresh tokens in cookies
       await setToken(res, accessToken, refreshToken);
+      await prisma.user.update({
+        where: { id: extractCurrentUser.id },
+        data: { refreshToken },
+      });
 
       res.status(200).json({
         success: true,
