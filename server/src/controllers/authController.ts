@@ -9,12 +9,12 @@ import qs from "querystring";
 
 // Token oluşturma fonksiyonları
 function generateAccessToken(userId: string, email: string, role: string) {
-  return jwt.sign({ userId, email, role }, process.env.ACCESS_SECRET!, {
+  return jwt.sign({ userId, email, role }, process.env.JWT_SECRET!, {
     expiresIn: "15m",
   });
 }
 function generateRefreshToken(userId: string, email: string, role: string) {
-  return jwt.sign({ userId, email, role }, process.env.REFRESH_SECRET!, {
+  return jwt.sign({ userId, email, role }, process.env.JWT_SECRET!, {
     expiresIn: "7d",
   });
 }
@@ -36,15 +36,15 @@ function generateRefreshToken(userId: string, email: string, role: string) {
 
 async function setToken(
   res: Response,
-  accessToken: string,
+  // accessToken: string,
   refreshToken: string
 ) {
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: true, // Railway zaten HTTPS, o yüzden true olacak
-    sameSite: "none", // "strict" veya "lax" yerine "none" yap
-    maxAge: 60 * 60 * 1000,
-  });
+  // res.cookie("accessToken", accessToken, {
+  //   httpOnly: true,
+  //   secure: true, // Railway zaten HTTPS, o yüzden true olacak
+  //   sameSite: "none", // "strict" veya "lax" yerine "none" yap
+  //   maxAge: 60 * 60 * 1000,
+  // });
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
@@ -137,13 +137,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         extractCurrentUser.email,
         extractCurrentUser.role
       );
-      // Refresh token'ı httpOnly cookie'ye kaydet
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true, // Tarayıcıdan erişilemez
-        secure: true, // Sadece HTTPS üzerinde çalışır
-        sameSite: "strict", // "strict" veya "lax" yerine "none" yap
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 gün
-      });
+      // // Refresh token'ı httpOnly cookie'ye kaydet
+      await setToken(res, refreshToken);
 
       // const { accessToken, refreshToken } = generateToken(
       //   extractCurrentUser.id,
@@ -191,14 +186,12 @@ export const refreshAccessToken = async (
   //   });
   //   return;
   // }
-
   // try {
   //   const user = await prisma.user.findFirst({
   //     where: {
   //       refreshToken,
   //     },
   //   });
-
   //   if (!user) {
   //     res.status(401).json({
   //       success: false,
@@ -206,13 +199,11 @@ export const refreshAccessToken = async (
   //     });
   //     return;
   //   }
-
   //   const { accessToken, refreshToken: newRefreshToken } = generateToken(
   //     user.id,
   //     user.email,
   //     user.role
   //   );
-
   //   await setToken(res, accessToken, newRefreshToken);
   //   res.status(200).json({
   //     success: true,

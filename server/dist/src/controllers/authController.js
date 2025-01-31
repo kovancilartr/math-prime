@@ -19,12 +19,12 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 // Custom Fonksiyonlar
 // Token oluşturma fonksiyonları
 function generateAccessToken(userId, email, role) {
-    return jsonwebtoken_1.default.sign({ userId, email, role }, process.env.ACCESS_SECRET, {
+    return jsonwebtoken_1.default.sign({ userId, email, role }, process.env.JWT_SECRET, {
         expiresIn: "15m",
     });
 }
 function generateRefreshToken(userId, email, role) {
-    return jsonwebtoken_1.default.sign({ userId, email, role }, process.env.REFRESH_SECRET, {
+    return jsonwebtoken_1.default.sign({ userId, email, role }, process.env.JWT_SECRET, {
         expiresIn: "7d",
     });
 }
@@ -43,14 +43,16 @@ function generateRefreshToken(userId, email, role) {
 //   const refreshToken = uuidv4();
 //   return { accessToken, refreshToken };
 // }
-function setToken(res, accessToken, refreshToken) {
+function setToken(res, 
+// accessToken: string,
+refreshToken) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.cookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: true, // Railway zaten HTTPS, o yüzden true olacak
-            sameSite: "none", // "strict" veya "lax" yerine "none" yap
-            maxAge: 60 * 60 * 1000,
-        });
+        // res.cookie("accessToken", accessToken, {
+        //   httpOnly: true,
+        //   secure: true, // Railway zaten HTTPS, o yüzden true olacak
+        //   sameSite: "none", // "strict" veya "lax" yerine "none" yap
+        //   maxAge: 60 * 60 * 1000,
+        // });
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: true,
@@ -134,13 +136,8 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             // Tokenları oluştur
             const accessToken = generateAccessToken(extractCurrentUser.id, extractCurrentUser.email, extractCurrentUser.role);
             const refreshToken = generateRefreshToken(extractCurrentUser.id, extractCurrentUser.email, extractCurrentUser.role);
-            // Refresh token'ı httpOnly cookie'ye kaydet
-            res.cookie("refreshToken", refreshToken, {
-                httpOnly: true, // Tarayıcıdan erişilemez
-                secure: true, // Sadece HTTPS üzerinde çalışır
-                sameSite: "strict", // "strict" veya "lax" yerine "none" yap
-                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 gün
-            });
+            // // Refresh token'ı httpOnly cookie'ye kaydet
+            yield setToken(res, refreshToken);
             // const { accessToken, refreshToken } = generateToken(
             //   extractCurrentUser.id,
             //   extractCurrentUser.email,
