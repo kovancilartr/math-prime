@@ -15,6 +15,7 @@ import optionsRoutes from "./routes/optionsRoutes";
 import courseAndUserRoutes from "./routes/courseAndUserRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
 
+
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
