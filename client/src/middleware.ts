@@ -64,6 +64,7 @@ export async function middleware(request: NextRequest) {
         const response = NextResponse.redirect(
           new URL("/auth/login", request.url)
         );
+        console.error("Refresh token failed999:", refreshResponse.statusText);
         response.cookies.delete("accessToken");
         response.cookies.delete("refreshToken");
         return response;

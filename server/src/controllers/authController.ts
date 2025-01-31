@@ -30,14 +30,14 @@ async function setToken(
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
     secure: true, // Railway zaten HTTPS, o yüzden true olacak
-    sameSite: "strict", // "strict" veya "lax" yerine "none" yap
+    sameSite: "none", // "strict" veya "lax" yerine "none" yap
     maxAge: 60 * 60 * 1000,
   });
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
-    maxAge: 7 * 24 * 60 * 60,
+    sameSite: "none",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // Süreyi milisaniye cinsinden belirtin
   });
   console.log("Access and refresh tokens set successfully."); // Başarılı işlem sonrası konsola bilgi ver
 }
@@ -122,6 +122,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
       // Set access and refresh tokens in cookies
       await setToken(res, accessToken, refreshToken);
+
       await prisma.user.update({
         where: { id: extractCurrentUser.id },
         data: { refreshToken },
