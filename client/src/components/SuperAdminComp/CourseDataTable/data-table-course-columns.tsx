@@ -14,8 +14,11 @@ export const courseColumns: ColumnDef<Courses>[] = [
     header: ({ table }) => (
       <Checkbox
         checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          table.getIsAllPageRowsSelected()
+            ? true
+            : table.getIsSomePageRowsSelected()
+            ? "indeterminate"
+            : false
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -48,7 +51,11 @@ export const courseColumns: ColumnDef<Courses>[] = [
         {row.original.categories.length > 0 ? (
           <div className="flex flex-wrap gap-1 items-center justify-center">
             {row.original.categories.map((category: Category) => (
-              <Badge key={category.id} variant="default" className="bg-cyan-800 text-slate-50">
+              <Badge
+                key={category.id}
+                variant="default"
+                className="bg-cyan-800 text-slate-50"
+              >
                 {category.name}
               </Badge>
             ))}

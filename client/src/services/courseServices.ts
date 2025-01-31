@@ -16,12 +16,14 @@ type fetchCoursesProps = {
   pageSize?: number;
 };
 type createCourseProps = {
-  instructorId: string;
-  title: string;
-  description: string;
-  price: number;
-  thumbnail: string;
-  isPublished: boolean;
+  title?: string;
+  description?: string;
+  courseVideoUrl?: string;
+  price?: number;
+  instructorId?: string;
+  thumbnail?: string;
+  isPublished?: boolean;
+  categoryId?: string;
 };
 type editCourseProps = {
   id: string | undefined;

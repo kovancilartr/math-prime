@@ -9,6 +9,7 @@ const userRoutes = ["/courses/:path*"];
 
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get("accessToken")?.value;
+  console.log("Access token Middleware: ", accessToken);
   const { pathname } = request.nextUrl;
 
   if (accessToken) {
@@ -21,6 +22,7 @@ export async function middleware(request: NextRequest) {
         role: string;
       };
 
+      console.log("Role Middleware: ", role, "payload Middleware: ", payload);
       // if (publicRoutes.includes(pathname)) {
       //   return NextResponse.redirect(
       //     new URL(
