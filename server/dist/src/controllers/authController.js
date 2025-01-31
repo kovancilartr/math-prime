@@ -35,16 +35,15 @@ function setToken(res, accessToken, refreshToken) {
             httpOnly: true,
             secure: true, // Railway zaten HTTPS, o yüzden true olacak
             sameSite: "none", // "strict" veya "lax" yerine "none" yap
-            domain: ".math-prime-client.vercel.app", // Frontend domainini buraya ekle
             maxAge: 60 * 60 * 1000,
         });
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            domain: ".math-prime-client.vercel.app",
             maxAge: 7 * 24 * 60 * 60,
         });
+        console.log("Access and refresh tokens set successfully."); // Başarılı işlem sonrası konsola bilgi ver
     });
 }
 // API Kontrollerleri
