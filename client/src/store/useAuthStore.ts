@@ -7,18 +7,6 @@ import { persist } from "zustand/middleware";
 const axiosInstance = axios.create({
   baseURL: API_ROUTES.AUTH,
   withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-    "Access-Control-Allow-Headers":
-      "Origin, X-Requested-With, Content-Type, Accept",
-    "Access-Control-Allow-Credentials": true,
-    "Access-Control-Max-Age": "86400",
-    "Access-Control-Expose-Headers": "Content-Length, Content-Range",
-    credentials: "include",
-  },
 });
 
 export const useAuthStore = create<AuthStore>()(

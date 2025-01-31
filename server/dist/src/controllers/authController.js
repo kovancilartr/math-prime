@@ -34,13 +34,13 @@ function setToken(res, accessToken, refreshToken) {
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: true, // Railway zaten HTTPS, o yüzden true olacak
-            sameSite: "none", // "strict" veya "lax" yerine "none" yap
+            sameSite: "strict", // "strict" veya "lax" yerine "none" yap
             maxAge: 60 * 60 * 1000,
         });
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: true,
-            sameSite: "none",
+            sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60,
         });
         console.log("Access and refresh tokens set successfully."); // Başarılı işlem sonrası konsola bilgi ver
