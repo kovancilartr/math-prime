@@ -8,6 +8,7 @@ type User = {
 
 type AuthStoreState = {
   user: User | null;
+  accessToken: string | null;
   allUsersState: User[];
   isLoading: boolean;
   error: string | null;

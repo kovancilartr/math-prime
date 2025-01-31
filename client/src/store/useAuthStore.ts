@@ -13,6 +13,7 @@ export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({
       user: null,
+      accessToken: null,
       allUsersState: [],
       isLoading: false,
       error: null,
@@ -56,6 +57,7 @@ export const useAuthStore = create<AuthStore>()(
               isLoading: false,
               user: response.data.user,
               message: response.data.message,
+              accessToken: response.data.accessToken,
             });
             return true;
           } else {
@@ -79,7 +81,7 @@ export const useAuthStore = create<AuthStore>()(
         set({ isLoading: true, error: null });
         try {
           await axiosInstance.post("/logout");
-          set({ isLoading: false, user: null });
+          set({ isLoading: false, user: null, accessToken: null });
           window.location.reload(); // Çıkış yapıldığında sayfayı yeniler
         } catch (error) {
           set({

@@ -6,21 +6,33 @@ import { v4 as uuidv4 } from "uuid";
 import qs from "querystring";
 
 // Custom Fonksiyonlar
-function generateToken(userId: string, email: string, role: string) {
-  const accessToken = jwt.sign(
-    {
-      userId,
-      email,
-      role,
-    },
-    process.env.JWT_SECRET!,
-    {
-      expiresIn: "1h", // 1 hour
-    }
-  );
-  const refreshToken = uuidv4();
-  return { accessToken, refreshToken };
+
+// Token oluşturma fonksiyonları
+function generateAccessToken(userId: string, email: string, role: string) {
+  return jwt.sign({ userId, email, role }, process.env.ACCESS_SECRET!, {
+    expiresIn: "15m",
+  });
 }
+function generateRefreshToken(userId: string, email: string, role: string) {
+  return jwt.sign({ userId, email, role }, process.env.REFRESH_SECRET!, {
+    expiresIn: "7d",
+  });
+}
+// function generateToken(userId: string, email: string, role: string) {
+//   const accessToken = jwt.sign(
+//     {
+//       userId,
+//       email,
+//       role,
+//     },
+//     process.env.JWT_SECRET!,
+//     {
+//       expiresIn: "1h", // 1 hour
+//     }
+//   );
+//   const refreshToken = uuidv4();
+//   return { accessToken, refreshToken };
+// }
 
 async function setToken(
   res: Response,
@@ -114,16 +126,33 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     } else if (extractCurrentUser.status === "ACTIVE") {
       // Generate access and refresh tokens
-      const { accessToken, refreshToken } = generateToken(
+      // Tokenları oluştur
+      const accessToken = generateAccessToken(
         extractCurrentUser.id,
         extractCurrentUser.email,
         extractCurrentUser.role
       );
+      const refreshToken = generateRefreshToken(
+        extractCurrentUser.id,
+        extractCurrentUser.email,
+        extractCurrentUser.role
+      );
+      // Refresh token'ı httpOnly cookie'ye kaydet
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true, // Tarayıcıdan erişilemez
+        secure: true, // Sadece HTTPS üzerinde çalışır
+        sameSite: "strict", // "strict" veya "lax" yerine "none" yap
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 gün
+      });
+
+      // const { accessToken, refreshToken } = generateToken(
+      //   extractCurrentUser.id,
+      //   extractCurrentUser.email,
+      //   extractCurrentUser.role
+      // );
 
       // Set access and refresh tokens in cookies
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-      await setToken(res, accessToken, refreshToken);
+      // await setToken(res, accessToken, refreshToken);
 
       await prisma.user.update({
         where: { id: extractCurrentUser.id },
@@ -133,6 +162,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       res.status(200).json({
         success: true,
         message: "Süper, giriş yaptınız!",
+        accessToken,
         user: {
           id: extractCurrentUser.id,
           name: extractCurrentUser.name,
@@ -153,45 +183,45 @@ export const refreshAccessToken = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) {
-    res.status(401).json({
-      success: false,
-      error: "Invalid refresh token",
-    });
-    return;
-  }
+  // const refreshToken = req.cookies.refreshToken;
+  // if (!refreshToken) {
+  //   res.status(401).json({
+  //     success: false,
+  //     error: "Invalid refresh token",
+  //   });
+  //   return;
+  // }
 
-  try {
-    const user = await prisma.user.findFirst({
-      where: {
-        refreshToken,
-      },
-    });
+  // try {
+  //   const user = await prisma.user.findFirst({
+  //     where: {
+  //       refreshToken,
+  //     },
+  //   });
 
-    if (!user) {
-      res.status(401).json({
-        success: false,
-        error: "User not found",
-      });
-      return;
-    }
+  //   if (!user) {
+  //     res.status(401).json({
+  //       success: false,
+  //       error: "User not found",
+  //     });
+  //     return;
+  //   }
 
-    const { accessToken, refreshToken: newRefreshToken } = generateToken(
-      user.id,
-      user.email,
-      user.role
-    );
+  //   const { accessToken, refreshToken: newRefreshToken } = generateToken(
+  //     user.id,
+  //     user.email,
+  //     user.role
+  //   );
 
-    await setToken(res, accessToken, newRefreshToken);
-    res.status(200).json({
-      success: true,
-      message: "Refresh token refreshed successfully",
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Refresh token error" });
-  }
+  //   await setToken(res, accessToken, newRefreshToken);
+  //   res.status(200).json({
+  //     success: true,
+  //     message: "Refresh token refreshed successfully",
+  //   });
+  // } catch (error) {
+  //   console.error(error);
+  //   res.status(500).json({ error: "Refresh token error" });
+  // }
 };
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
