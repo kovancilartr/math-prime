@@ -121,6 +121,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       );
 
       // Set access and refresh tokens in cookies
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
       await setToken(res, accessToken, refreshToken);
 
       await prisma.user.update({

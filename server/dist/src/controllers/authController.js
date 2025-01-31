@@ -119,6 +119,8 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             // Generate access and refresh tokens
             const { accessToken, refreshToken } = generateToken(extractCurrentUser.id, extractCurrentUser.email, extractCurrentUser.role);
             // Set access and refresh tokens in cookies
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("refreshToken", refreshToken);
             yield setToken(res, accessToken, refreshToken);
             yield server_1.prisma.user.update({
                 where: { id: extractCurrentUser.id },

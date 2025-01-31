@@ -8,7 +8,7 @@ const superAdminRoutes = ["/super-admin", "/super-admin/:path*"];
 const userRoutes = ["/courses/:path*"];
 
 export async function middleware(request: NextRequest) {
-  const accessToken = request.cookies.get("accessToken")?.value;
+  const accessToken = request.cookies.get("accessToken")?.value || localStorage.getItem("accessToken");
   console.log("Access token Middleware: ", accessToken);
   const { pathname } = request.nextUrl;
 
