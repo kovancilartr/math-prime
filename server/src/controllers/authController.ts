@@ -29,14 +29,16 @@ async function setToken(
 ) {
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 60 * 60 * 1000, // 1 hour
+    secure: true, // Railway zaten HTTPS, o yüzden true olacak
+    sameSite: "none", // "strict" veya "lax" yerine "none" yap
+    domain: ".math-prime-client.vercel.app", // Frontend domainini buraya ekle
+    maxAge: 60 * 60 * 1000,
   });
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    secure: true,
+    sameSite: "none",
+    domain: ".math-prime-client.vercel.app",
     maxAge: 7 * 24 * 60 * 60,
   });
 }
