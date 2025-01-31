@@ -175,6 +175,7 @@ export const useAuthStore = create<AuthStore>()(
         isLoading: state.isLoading,
         error: state.error,
         message: state.message,
+        accessToken: state.accessToken,
       }),
     }
   )
