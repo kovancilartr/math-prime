@@ -24,7 +24,7 @@ function generateToken(userId, email, role) {
         email,
         role,
     }, process.env.JWT_SECRET, {
-        expiresIn: "60m", // 1 hour
+        expiresIn: "1h", // 1 hour
     });
     const refreshToken = (0, uuid_1.v4)();
     return { accessToken, refreshToken };
@@ -33,14 +33,16 @@ function setToken(res, accessToken, refreshToken) {
     return __awaiter(this, void 0, void 0, function* () {
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 60 * 60 * 1000, // 1 hour
+            secure: true, // Railway zaten HTTPS, o yüzden true olacak
+            sameSite: "none", // "strict" veya "lax" yerine "none" yap
+            domain: ".math-prime-client.vercel.app", // Frontend domainini buraya ekle
+            maxAge: 60 * 60 * 1000,
         });
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            secure: true,
+            sameSite: "none",
+            domain: ".math-prime-client.vercel.app",
             maxAge: 7 * 24 * 60 * 60,
         });
     });
@@ -119,6 +121,10 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             const { accessToken, refreshToken } = generateToken(extractCurrentUser.id, extractCurrentUser.email, extractCurrentUser.role);
             // Set access and refresh tokens in cookies
             yield setToken(res, accessToken, refreshToken);
+            yield server_1.prisma.user.update({
+                where: { id: extractCurrentUser.id },
+                data: { refreshToken },
+            });
             res.status(200).json({
                 success: true,
                 message: "Süper, giriş yaptınız!",
