@@ -6,7 +6,8 @@ import DataTableUser from "@/components/SuperAdminComp/UserDataTable/data-table-
 import userColumns from "@/components/SuperAdminComp/UserDataTable/data-table-user-columns";
 
 const SuperAdminUsersPage = () => {
-  const { allUsers, allUsersState } = useAuthStore();
+  const { allUsers, allUsersState, accessToken } = useAuthStore();
+  console.log("accessToken", accessToken);
   useEffect(() => {
     const fetchAllUsers = async () => {
       await allUsers();

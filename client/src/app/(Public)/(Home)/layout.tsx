@@ -8,6 +8,7 @@ interface HomeLayoutProps {
 }
 const HomeLayout = ({ children }: HomeLayoutProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
+
   return (
     <div className="min-h-screen bg-background">
       <GlobalSidebar
