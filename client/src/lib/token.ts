@@ -19,5 +19,8 @@ export const getAccessToken = () => {
       };
     }
   }
-  return null;
+  return {
+    success: false,
+    error: "Token YOK",
+  };
 };
