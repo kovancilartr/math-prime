@@ -1,7 +1,7 @@
 export default function Home() {
   return (
-    <div>
-      <h2>Home</h2>
+    <div className="flex items-center justify-center">
+      <h2>Ana Sayfa</h2>
     </div>
   );
 }

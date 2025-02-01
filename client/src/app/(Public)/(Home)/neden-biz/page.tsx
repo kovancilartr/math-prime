@@ -10,7 +10,8 @@ const NedenBiz = () => {
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-900 ">Neden Biz?</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            İletken Online ile eğitimde fark yaratın
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat
+            voluptatibus repellat assumenda deserunt ducimus. Voluptatum, vitae.
           </p>
         </div>
 
@@ -30,9 +31,9 @@ const NedenBiz = () => {
 
         <div className="mt-16 text-center">
           <p className="text-gray-600 max-w-3xl mx-auto">
-            İletken Online Eğitim Platformu ile ilköğretimden üniversiteye
-            uzanan yolda, uzman eğitim kadromuz eşliğinde hedeflerinize daha
-            hızlı ulaşın.
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi
+            sequi officia nostrum culpa nesciunt incidunt error inventore
+            possimus ipsum hic.
           </p>
         </div>
       </div>
