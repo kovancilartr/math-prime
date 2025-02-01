@@ -13,8 +13,6 @@ const CourseDetailPage = () => {
   const params = useParams();
   const courseId = params.id as string;
   const { user, accessToken } = useAuthStore();
-
-  console.log("accessToken", accessToken);
   // React Query
   const {
     data: courseData,

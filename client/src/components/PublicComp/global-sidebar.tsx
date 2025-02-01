@@ -26,7 +26,6 @@ interface GlobalSidebarProps {
 const GlobalSidebar = ({ isOpen, toggle }: GlobalSidebarProps) => {
   const router = useRouter();
   const { user, logout } = useAuthStore();
-  console.log("user", user);
   const menuItems = [
     { name: "Ana Sayfa", href: "/", icon: LayoutDashboard },
     { name: "Neden Biz?", href: "/neden-biz", icon: Info },

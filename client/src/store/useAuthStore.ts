@@ -81,7 +81,7 @@ export const useAuthStore = create<AuthStore>()(
         set({ isLoading: true, error: null });
         try {
           await axiosInstance.post("/logout");
-          set({ isLoading: false, user: null, accessToken: null });
+          set({ isLoading: false, user: null, accessToken: null, message: null });
           window.location.reload(); // Çıkış yapıldığında sayfayı yeniler
         } catch (error) {
           set({

@@ -9,7 +9,6 @@ interface CourseCardProps {
   data: Courses;
 }
 const CourseCard = ({ data }: CourseCardProps) => {
-  console.log("data", data);
   return (
     <>
       <Link href={`/courses/details/${data.id}`}>

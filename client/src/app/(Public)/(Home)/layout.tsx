@@ -7,7 +7,7 @@ interface HomeLayoutProps {
   children: React.ReactNode;
 }
 const HomeLayout = ({ children }: HomeLayoutProps) => {
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   return (
     <div className="min-h-screen bg-background">

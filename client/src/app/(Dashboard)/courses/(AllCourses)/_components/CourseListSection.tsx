@@ -15,7 +15,6 @@ interface CourseListSectionProps {
   } | null;
 }
 const CourseListSection = ({ courseData }: CourseListSectionProps) => {
-  console.log("courseData", courseData?.data);
   return (
     <Accordion
       type="single"

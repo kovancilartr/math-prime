@@ -82,7 +82,6 @@ const CourseEditSheet = ({
     },
   });
 
-  console.log("course", course);
   const allAdminRole = async () => {
     const all_super_admin = await getAdminRoleAllUser();
     setTeacher(all_super_admin);
@@ -90,7 +89,6 @@ const CourseEditSheet = ({
     const all_categories = await getCategoriesServices({});
     setCategories(all_categories?.data);
   };
-  console.log("categories", categories);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); // Formun varsayılan davranışını engelle

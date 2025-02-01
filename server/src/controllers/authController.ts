@@ -5,8 +5,6 @@ import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import qs from "querystring";
 
-// Custom Fonksiyonlar
-
 // Token oluşturma fonksiyonları
 function generateAccessToken(userId: string, email: string, role: string) {
   return jwt.sign({ userId, email, role }, process.env.JWT_SECRET!, {
@@ -18,33 +16,12 @@ function generateRefreshToken(userId: string, email: string, role: string) {
     expiresIn: "7d",
   });
 }
-// function generateToken(userId: string, email: string, role: string) {
-//   const accessToken = jwt.sign(
-//     {
-//       userId,
-//       email,
-//       role,
-//     },
-//     process.env.JWT_SECRET!,
-//     {
-//       expiresIn: "1h", // 1 hour
-//     }
-//   );
-//   const refreshToken = uuidv4();
-//   return { accessToken, refreshToken };
-// }
+
 
 async function setToken(
   res: Response,
-  // accessToken: string,
   refreshToken: string
 ) {
-  // res.cookie("accessToken", accessToken, {
-  //   httpOnly: true,
-  //   secure: true, // Railway zaten HTTPS, o yüzden true olacak
-  //   sameSite: "none", // "strict" veya "lax" yerine "none" yap
-  //   maxAge: 60 * 60 * 1000,
-  // });
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
@@ -125,7 +102,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       });
       return;
     } else if (extractCurrentUser.status === "ACTIVE") {
-      // Generate access and refresh tokens
       // Tokenları oluştur
       const accessToken = generateAccessToken(
         extractCurrentUser.id,
@@ -137,17 +113,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         extractCurrentUser.email,
         extractCurrentUser.role
       );
-      // // Refresh token'ı httpOnly cookie'ye kaydet
       await setToken(res, refreshToken);
-
-      // const { accessToken, refreshToken } = generateToken(
-      //   extractCurrentUser.id,
-      //   extractCurrentUser.email,
-      //   extractCurrentUser.role
-      // );
-
-      // Set access and refresh tokens in cookies
-      // await setToken(res, accessToken, refreshToken);
 
       await prisma.user.update({
         where: { id: extractCurrentUser.id },
@@ -178,41 +144,7 @@ export const refreshAccessToken = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  // const refreshToken = req.cookies.refreshToken;
-  // if (!refreshToken) {
-  //   res.status(401).json({
-  //     success: false,
-  //     error: "Invalid refresh token",
-  //   });
-  //   return;
-  // }
-  // try {
-  //   const user = await prisma.user.findFirst({
-  //     where: {
-  //       refreshToken,
-  //     },
-  //   });
-  //   if (!user) {
-  //     res.status(401).json({
-  //       success: false,
-  //       error: "User not found",
-  //     });
-  //     return;
-  //   }
-  //   const { accessToken, refreshToken: newRefreshToken } = generateToken(
-  //     user.id,
-  //     user.email,
-  //     user.role
-  //   );
-  //   await setToken(res, accessToken, newRefreshToken);
-  //   res.status(200).json({
-  //     success: true,
-  //     message: "Refresh token refreshed successfully",
-  //   });
-  // } catch (error) {
-  //   console.error(error);
-  //   res.status(500).json({ error: "Refresh token error" });
-  // }
+
 };
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
