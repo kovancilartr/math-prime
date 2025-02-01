@@ -16,7 +16,6 @@ exports.deleteUser = exports.editUser = exports.getUserById = exports.getAllUser
 const server_1 = require("../server");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-// Custom Fonksiyonlar
 // Token oluşturma fonksiyonları
 function generateAccessToken(userId, email, role) {
     return jsonwebtoken_1.default.sign({ userId, email, role }, process.env.JWT_SECRET, {
@@ -28,31 +27,8 @@ function generateRefreshToken(userId, email, role) {
         expiresIn: "7d",
     });
 }
-// function generateToken(userId: string, email: string, role: string) {
-//   const accessToken = jwt.sign(
-//     {
-//       userId,
-//       email,
-//       role,
-//     },
-//     process.env.JWT_SECRET!,
-//     {
-//       expiresIn: "1h", // 1 hour
-//     }
-//   );
-//   const refreshToken = uuidv4();
-//   return { accessToken, refreshToken };
-// }
-function setToken(res, 
-// accessToken: string,
-refreshToken) {
+function setToken(res, refreshToken) {
     return __awaiter(this, void 0, void 0, function* () {
-        // res.cookie("accessToken", accessToken, {
-        //   httpOnly: true,
-        //   secure: true, // Railway zaten HTTPS, o yüzden true olacak
-        //   sameSite: "none", // "strict" veya "lax" yerine "none" yap
-        //   maxAge: 60 * 60 * 1000,
-        // });
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: true,
@@ -132,19 +108,10 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return;
         }
         else if (extractCurrentUser.status === "ACTIVE") {
-            // Generate access and refresh tokens
             // Tokenları oluştur
             const accessToken = generateAccessToken(extractCurrentUser.id, extractCurrentUser.email, extractCurrentUser.role);
             const refreshToken = generateRefreshToken(extractCurrentUser.id, extractCurrentUser.email, extractCurrentUser.role);
-            // // Refresh token'ı httpOnly cookie'ye kaydet
             yield setToken(res, refreshToken);
-            // const { accessToken, refreshToken } = generateToken(
-            //   extractCurrentUser.id,
-            //   extractCurrentUser.email,
-            //   extractCurrentUser.role
-            // );
-            // Set access and refresh tokens in cookies
-            // await setToken(res, accessToken, refreshToken);
             yield server_1.prisma.user.update({
                 where: { id: extractCurrentUser.id },
                 data: { refreshToken },
@@ -171,41 +138,6 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.login = login;
 const refreshAccessToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // const refreshToken = req.cookies.refreshToken;
-    // if (!refreshToken) {
-    //   res.status(401).json({
-    //     success: false,
-    //     error: "Invalid refresh token",
-    //   });
-    //   return;
-    // }
-    // try {
-    //   const user = await prisma.user.findFirst({
-    //     where: {
-    //       refreshToken,
-    //     },
-    //   });
-    //   if (!user) {
-    //     res.status(401).json({
-    //       success: false,
-    //       error: "User not found",
-    //     });
-    //     return;
-    //   }
-    //   const { accessToken, refreshToken: newRefreshToken } = generateToken(
-    //     user.id,
-    //     user.email,
-    //     user.role
-    //   );
-    //   await setToken(res, accessToken, newRefreshToken);
-    //   res.status(200).json({
-    //     success: true,
-    //     message: "Refresh token refreshed successfully",
-    //   });
-    // } catch (error) {
-    //   console.error(error);
-    //   res.status(500).json({ error: "Refresh token error" });
-    // }
 });
 exports.refreshAccessToken = refreshAccessToken;
 const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
