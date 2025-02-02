@@ -17,11 +17,7 @@ function generateRefreshToken(userId: string, email: string, role: string) {
   });
 }
 
-
-async function setToken(
-  res: Response,
-  refreshToken: string
-) {
+async function setToken(res: Response, refreshToken: string) {
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
@@ -143,9 +139,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 export const refreshAccessToken = async (
   req: Request,
   res: Response
-): Promise<void> => {
-
-};
+): Promise<void> => {};
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
   res.clearCookie("accessToken");
