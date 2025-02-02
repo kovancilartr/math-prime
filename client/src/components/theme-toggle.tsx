@@ -93,9 +93,7 @@ export function ThemeToggle({ type = "double", className }: ThemeToggleProps) {
         onClick={() =>
           handleThemeChange(resolvedTheme === "light" ? "dark" : "light")
         }
-        className={cn(
-          `relative flex items-center justify-center ${className?.buttonClass}`
-        )}
+        className={cn(`relative flex items-center  ${className?.buttonClass}`)}
       >
         {/* Açık Tema İkonu */}
         <Sun

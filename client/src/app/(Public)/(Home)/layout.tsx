@@ -1,5 +1,6 @@
 "use client";
 import GlobalSidebar from "@/components/PublicComp/global-sidebar";
+import UserButton from "@/components/user-button";
 import { cn } from "@/lib/utils";
 import React from "react";
 
@@ -11,6 +12,7 @@ const HomeLayout = ({ children }: HomeLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-background">
+      <UserButton />
       <GlobalSidebar
         isOpen={isSidebarOpen}
         toggle={() => setIsSidebarOpen(!isSidebarOpen)}
