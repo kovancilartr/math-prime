@@ -20,13 +20,20 @@ function generateRefreshToken(userId: string, email: string, role: string) {
 
 async function setToken(
   res: Response,
-  refreshToken: string
+  refreshToken: string,
+  accessToken: string
 ) {
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
     sameSite: "none",
     maxAge: 7 * 24 * 60 * 60 * 1000, // Süreyi milisaniye cinsinden belirtin
+  });
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    maxAge: 15 * 60 * 1000, // Süreyi milisaniye cinsinden belirtin
   });
   console.log("Access and refresh tokens set successfully."); // Başarılı işlem sonrası konsola bilgi ver
 }
@@ -113,7 +120,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         extractCurrentUser.email,
         extractCurrentUser.role
       );
-      await setToken(res, refreshToken);
+      await setToken(res, refreshToken, accessToken);
 
       await prisma.user.update({
         where: { id: extractCurrentUser.id },
