@@ -5,6 +5,7 @@ import SuperAdminSidebar from "@/components/SuperAdminComp/superadmin-sidebar";
 import { getAccessToken } from "@/lib/token";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/loading-spinner";
+import UserButton from "@/components/user-button";
 
 const SuperAdminLayout = ({ children }: { children: React.ReactNode }) => {
   // STATES
@@ -33,6 +34,7 @@ const SuperAdminLayout = ({ children }: { children: React.ReactNode }) => {
   }
   return (
     <div className="min-h-screen bg-background">
+      <UserButton />
       <SuperAdminSidebar
         isOpen={isSidebarOpen}
         toggle={() => setIsSidebarOpen(!isSidebarOpen)}
