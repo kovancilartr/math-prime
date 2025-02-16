@@ -132,3 +132,19 @@ export const getCourseEnrollmentServices = async (
     return null;
   }
 };
+
+export const createCourseEnrollmentServices = async (
+  userId: string,
+  courseId: string
+) => {
+  try {
+    const response = await axiosInstance.post(`/create-course-enrollment`, {
+      userId,
+      courseId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("CourseEnrollment oluşturulurken hata oluştu:", error);
+    return null;
+  }
+};

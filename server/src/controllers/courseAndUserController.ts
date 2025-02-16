@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../server";
 
-export const CourseEnrollment = async (
+export const CreateCourseEnrollment = async (
   req: Request,
   res: Response
 ): Promise<void> => {

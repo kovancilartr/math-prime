@@ -1,7 +1,7 @@
 import express from "express";
 import {
   CompletedLesson,
-  CourseEnrollment,
+  CreateCourseEnrollment,
   DeleteCompletedLesson,
   DeleteCourseEnrollment,
   GetCourseEnrollment,
@@ -9,7 +9,7 @@ import {
 
 const router = express.Router();
 
-router.post("/course-enrollment", CourseEnrollment);
+router.post("/create-course-enrollment", CreateCourseEnrollment);
 router.get("/course-enrollment/:userId/:courseId", GetCourseEnrollment);
 router.delete("/course-enrollment/:id", DeleteCourseEnrollment);
 router.post("/completed-lesson", CompletedLesson);

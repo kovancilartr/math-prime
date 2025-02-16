@@ -20,7 +20,12 @@ export const getCourses = async (
     include = {
       section: {
         include: {
-          chapter: true,
+          chapter: {
+            include: {
+              quizzes: true,
+              completedLesson: true,
+            },
+          },
         },
       },
       categories: true,

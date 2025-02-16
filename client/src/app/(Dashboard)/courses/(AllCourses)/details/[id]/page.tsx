@@ -1,18 +1,28 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { Category } from "@/types/globalTypes";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { VideoPlayer } from "@/components/video-player";
 import CourseListSection from "../../_components/CourseListSection";
 import LoadingSpinner from "@/components/loading-spinner";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "@/components/ui/button";
-import { fetchCourseDetailsPageActions, fetchCourseEnrollmentActions } from "@/store/useQueryStore";
+import {
+  fetchCourseDetailsPageActions,
+  fetchCourseEnrollmentActions,
+} from "@/store/useQueryStore";
+import { createCourseEnrollmentServices } from "@/services/courseServices";
+import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import ChapterButton from "@/components/DashboardComp/chapter-button";
 
 const CourseDetailPage = () => {
   const params = useParams();
+  const router = useRouter();
   const courseId = params.id as string;
   const { user, accessToken } = useAuthStore();
+  const queryClient = useQueryClient();
+
   // React Query
   const {
     data: courseData,
@@ -26,20 +36,48 @@ const CourseDetailPage = () => {
   } = fetchCourseEnrollmentActions(user?.id as string, courseId);
   const isLocked = !courseEnrollment?.success;
 
+  const mutation = useMutation({
+    mutationFn: () => {
+      return createCourseEnrollmentServices(user?.id as string, courseId);
+    },
+    onSuccess: () => {
+      toast.success("Kursa başarıyla kaydedildi");
+      queryClient.refetchQueries({
+        queryKey: ["getCourseEnrollment", { userId: user?.id, courseId }],
+        exact: true,
+      });
+    },
+    onError: (error) => {
+      toast.error("Bir hata oluştu");
+    },
+  });
+
+  const createCourseEnrollment = async () => {
+    try {
+      const response = await mutation.mutateAsync();
+      return response;
+    } catch (error) {
+      console.error("CourseEnrollment oluşturulurken hata oluştu:", error);
+      return null;
+    }
+  };
+
   if (isCourseLoading || isCourseEnrollmentLoading) {
     return <LoadingSpinner />;
   }
   if (isCourseError || isCourseEnrollmentError) {
     return <p>Verileri çekerken bir hata oluştu.</p>;
   }
-
+  
+  const chapterId = courseData?.data[0]?.section[0]?.chapter[0]?.id;
   // Kullanıcı satın almadıysa, kursu kilitli göster
 
-  const saveCourseEnrollment = async () => {
+  const onSubmit = async () => {
     if (isLocked) {
-      console.log("Kursa kaydediliyor");
-    } else if (!isLocked) {
-      console.log("Kursa devam ettiriliyor");
+      const response = await createCourseEnrollment();
+      console.log("Kursa kaydediliyor Response: ", response);
+    } else if (!isLocked && !isCourseLoading) {
+      router.push(`/courses/${courseId}/chapter/${chapterId}`);
     }
   };
 
@@ -52,7 +90,7 @@ const CourseDetailPage = () => {
               provider="youtube"
               videoUrl={courseData?.data[0]?.courseVideoUrl as string}
               courseId={courseId}
-              isLocked={isLocked} // Kullanıcı satın almadıysa, kursu kilitli göster
+              isLocked={isLocked}
             />
           </div>
           <div className="border rounded-md p-6 lightBg dark:darkBg">
@@ -89,12 +127,8 @@ const CourseDetailPage = () => {
               <p className="text-sm">{courseData?.data[0]?.description}</p>
             </div>
             <div className="flex justify-center">
-              <Button
-                variant="outline"
-                className="w-1/2"
-                onClick={saveCourseEnrollment}
-              >
-                {isLocked ? "Kursa Kayıt Ol" : "Kursa Devam Et"}
+              <Button variant="outline" className="w-1/2" onClick={onSubmit}>
+                <ChapterButton isLocked={isLocked} />
               </Button>
             </div>
           </div>

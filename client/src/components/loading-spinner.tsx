@@ -28,7 +28,7 @@ const LoadingSpinner = ({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center min-h-screen",
+        "flex flex-col pt-40 items-center min-h-screen",
         containerClassName
       )}
     >
