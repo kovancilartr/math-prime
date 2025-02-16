@@ -10,7 +10,7 @@ import {
   fetchCoursesByCategoryActions,
 } from "@/store/useQueryStore";
 
-const CoursesPage = () => {
+const AllCoursesPage = () => {
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("categoryId");
 
@@ -32,7 +32,7 @@ const CoursesPage = () => {
   } = fetchCoursesByCategoryActions(categoryId as string);
 
   if (isCategoriesLoading || isCoursesLoading || isFilteredCoursesLoading) {
-    return <LoadingSpinner spinnerVariant="bars" />;
+    return <LoadingSpinner spinnerVariant="ellipsis" />;
   }
 
   if (isCategoriesError || isCoursesError || isFilteredCoursesError) {
@@ -54,11 +54,10 @@ const CoursesPage = () => {
   );
 };
 
-// Suspense ile sarmalayın
-export default function Page() {
-  return (
-    <Suspense fallback={<LoadingSpinner spinnerVariant="bars" />}>
-      <CoursesPage />
-    </Suspense>
-  );
-}
+const WrappedAllCoursesPage = () => (
+  <Suspense fallback={<LoadingSpinner spinnerVariant="ellipsis" />}>
+    <AllCoursesPage />
+  </Suspense>
+);
+
+export default WrappedAllCoursesPage;

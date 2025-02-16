@@ -3,6 +3,7 @@ import { API_ROUTES } from "@/lib/api";
 import axios from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { QueryStore } from "@/types/useQueryTypes";
 
 const axiosInstance = axios.create({
   baseURL: API_ROUTES.AUTH,
@@ -81,7 +82,12 @@ export const useAuthStore = create<AuthStore>()(
         set({ isLoading: true, error: null });
         try {
           await axiosInstance.post("/logout");
-          set({ isLoading: false, user: null, accessToken: null, message: null });
+          set({
+            isLoading: false,
+            user: null,
+            accessToken: null,
+            message: null,
+          });
           window.location.reload(); // Çıkış yapıldığında sayfayı yeniler
         } catch (error) {
           set({
@@ -176,6 +182,25 @@ export const useAuthStore = create<AuthStore>()(
         error: state.error,
         message: state.message,
         accessToken: state.accessToken,
+      }),
+    }
+  )
+);
+
+export const useQueryStore = create<QueryStore>()(
+  persist(
+    (set, get) => ({
+      chapterSideBarVisible: true,
+      toggleChapterSideBarVisible: () => {
+        set((state) => ({
+          chapterSideBarVisible: !state.chapterSideBarVisible,
+        }));
+      },
+    }),
+    {
+      name: "query-storage",
+      partialize: (state) => ({
+        chapterSideBarVisible: state.chapterSideBarVisible,
       }),
     }
   )

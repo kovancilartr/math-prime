@@ -1,21 +1,26 @@
 "use client";
 import React from "react";
-import { useParams } from "next/navigation";
+import ChapterSidebar from "@/components/DashboardComp/chapter-sidebar";
+import { cn } from "@/lib/utils";
+import ChapterHeader from "@/components/DashboardComp/chapter-header";
 
 interface ChapterLayoutProps {
   children: React.ReactNode;
 }
 const ChapterLayout = ({ children }: ChapterLayoutProps) => {
-  const courseId = useParams().courseId as string;
   return (
-    <div className="h-full">
-      <div className="h-[80px] fixed inset-x-0 w-full z-50 bg-red-500">
-        <div>ChapterNavbar Eklenecek</div>
+    <div className="min-h-screen bg-background flex flex-row">
+      <ChapterSidebar />
+      <div className="flex flex-col min-h-screen w-full">
+        <ChapterHeader />
+        <div
+          className={cn(
+            "h-full transition-all duration-300 lightBg dark:darkBg"
+          )}
+        >
+          {children}
+        </div>
       </div>
-      <div className="hidden md:flex h-full w-80 top-[80px] flex-col fixed inset-y-0 z-49 bg-blue-700">
-        <div>ChapterSidebar Eklenecek</div>
-      </div>
-      <main className="relative md:left-80 top-[80px] h-full">{children}</main>
     </div>
   );
 };

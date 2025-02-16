@@ -1,5 +1,10 @@
 generator client {
-  provider = "prisma-client-js"
+  provider              = "prisma-client-js"
+  includeRelationFields = false
+}
+
+generator docs {
+  provider = "node node_modules/prisma-docs-generator"
 }
 
 datasource db {
@@ -73,6 +78,7 @@ model Section {
 model Chapter {
   id          String  @id @default(cuid())
   title       String
+  description String?
   videoUrl    String?
   pdfUrl      String?
   isPublished Boolean @default(false)

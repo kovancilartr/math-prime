@@ -67,7 +67,7 @@ body {
     @apply bg-background text-foreground;
   }
   .lightBg {
-    @apply bg-gradient-to-b from-gray-100 to-gray-200;
+    @apply bg-gradient-to-b from-gray-100 to-gray-300;
   }
   .darkBg {
     @apply bg-gradient-to-b from-gray-800 to-gray-900;

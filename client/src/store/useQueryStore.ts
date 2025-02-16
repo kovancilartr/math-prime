@@ -37,7 +37,7 @@ export const fetchAllCoursesActions = (categoryId: string) => {
       const response = await getCoursesServices({
         populate: "*",
         // Yayında olan kursları filtrele
-        // filters: [{ field: "isPublished", operator: "eq", value: "true" }],
+        filters: [{ field: "isPublished", operator: "eq", value: "true" }],
       });
       return response?.data;
     },
