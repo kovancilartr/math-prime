@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteChapter = exports.editChapter = exports.createChapter = exports.getChapters = void 0;
+exports.deleteCompletedChapter = exports.completeChapter = exports.deleteChapter = exports.editChapter = exports.createChapter = exports.getChapters = void 0;
 const server_1 = require("../server");
 // Chapter
 const getChapters = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -187,3 +187,75 @@ const deleteChapter = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.deleteChapter = deleteChapter;
+const completeChapter = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId, chapterId } = req.body;
+    try {
+        const completeChapter = yield server_1.prisma.completedLesson.create({
+            data: {
+                user: {
+                    connect: {
+                        id: userId,
+                    },
+                },
+                chapter: {
+                    connect: {
+                        id: chapterId,
+                    },
+                },
+            },
+        });
+        res.status(201).json({
+            success: true,
+            message: "Chapter tamamlanıyor",
+            completeChapter,
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "Chapter tamamlanırken bir hata oluştu",
+            error: error,
+        });
+        return;
+    }
+});
+exports.completeChapter = completeChapter;
+const deleteCompletedChapter = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { chapterId, userId } = req.params;
+    try {
+        // İlk olarak, silmek istediğiniz kaydın id'sini alın
+        const completedLesson = yield server_1.prisma.completedLesson.findFirst({
+            where: {
+                userId: userId,
+                chapterId: chapterId,
+            },
+        });
+        if (!completedLesson) {
+            res.status(404).json({
+                success: false,
+                message: "Tamamlanan bölüm bulunamadı.",
+            });
+        }
+        // Bulunan kaydı silin
+        const deletedChapter = yield server_1.prisma.completedLesson.delete({
+            where: {
+                id: completedLesson.id, // Burada id'yi kullanıyoruz
+            },
+        });
+        res.status(200).json({
+            success: true,
+            message: "Tamamlanan bölüm başarıyla silindi.",
+            deletedChapter,
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "Tamamlanan bölüm silinirken bir hata oluştu.",
+            error: error,
+        });
+    }
+});
+exports.deleteCompletedChapter = deleteCompletedChapter;

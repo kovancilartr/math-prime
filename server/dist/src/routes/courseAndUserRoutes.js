@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const courseAndUserController_1 = require("../controllers/courseAndUserController");
 const router = express_1.default.Router();
-router.post("/course-enrollment", courseAndUserController_1.CourseEnrollment);
+router.post("/create-course-enrollment", courseAndUserController_1.CreateCourseEnrollment);
 router.get("/course-enrollment/:userId/:courseId", courseAndUserController_1.GetCourseEnrollment);
 router.delete("/course-enrollment/:id", courseAndUserController_1.DeleteCourseEnrollment);
 router.post("/completed-lesson", courseAndUserController_1.CompletedLesson);
