@@ -23,7 +23,12 @@ const getCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         include = {
             section: {
                 include: {
-                    chapter: true,
+                    chapter: {
+                        include: {
+                            quizzes: true,
+                            completedLesson: true,
+                        },
+                    },
                 },
             },
             categories: true,

@@ -27,13 +27,19 @@ function generateRefreshToken(userId, email, role) {
         expiresIn: "7d",
     });
 }
-function setToken(res, refreshToken) {
+function setToken(res, refreshToken, accessToken) {
     return __awaiter(this, void 0, void 0, function* () {
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: true,
             sameSite: "none",
             maxAge: 7 * 24 * 60 * 60 * 1000, // Süreyi milisaniye cinsinden belirtin
+        });
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 15 * 60 * 1000, // Süreyi milisaniye cinsinden belirtin
         });
         console.log("Access and refresh tokens set successfully."); // Başarılı işlem sonrası konsola bilgi ver
     });
@@ -111,7 +117,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             // Tokenları oluştur
             const accessToken = generateAccessToken(extractCurrentUser.id, extractCurrentUser.email, extractCurrentUser.role);
             const refreshToken = generateRefreshToken(extractCurrentUser.id, extractCurrentUser.email, extractCurrentUser.role);
-            yield setToken(res, refreshToken);
+            yield setToken(res, refreshToken, accessToken);
             yield server_1.prisma.user.update({
                 where: { id: extractCurrentUser.id },
                 data: { refreshToken },

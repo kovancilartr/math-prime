@@ -10,4 +10,6 @@ router.get("/get-chapters", chapterController_1.getChapters);
 router.post("/create-chapter", chapterController_1.createChapter);
 router.put("/edit-chapter", chapterController_1.editChapter);
 router.delete("/delete-chapter/:id", chapterController_1.deleteChapter);
+router.post("/complete-chapter", chapterController_1.completeChapter);
+router.delete("/delete-completed-chapter/:chapterId/:userId", chapterController_1.deleteCompletedChapter);
 exports.default = router;

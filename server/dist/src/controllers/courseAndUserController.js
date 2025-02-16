@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeleteCompletedLesson = exports.CompletedLesson = exports.DeleteCourseEnrollment = exports.GetCourseEnrollment = exports.CourseEnrollment = void 0;
+exports.DeleteCompletedLesson = exports.CompletedLesson = exports.DeleteCourseEnrollment = exports.GetCourseEnrollment = exports.CreateCourseEnrollment = void 0;
 const server_1 = require("../server");
-const CourseEnrollment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const CreateCourseEnrollment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { courseId, userId } = req.body;
     try {
         const courseEnrollment = yield server_1.prisma.courseEnrollment.create({
@@ -44,7 +44,7 @@ const CourseEnrollment = (req, res) => __awaiter(void 0, void 0, void 0, functio
         return;
     }
 });
-exports.CourseEnrollment = CourseEnrollment;
+exports.CreateCourseEnrollment = CreateCourseEnrollment;
 const GetCourseEnrollment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, courseId } = req.params;
     try {
