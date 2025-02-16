@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import CourseList from "./_components/CourseList";
 import Categories from "./_components/Category";
@@ -54,4 +54,10 @@ const AllCoursesPage = () => {
   );
 };
 
-export default AllCoursesPage;
+const WrappedAllCoursesPage = () => (
+  <Suspense fallback={<LoadingSpinner spinnerVariant="ellipsis" />}>
+    <AllCoursesPage />
+  </Suspense>
+);
+
+export default WrappedAllCoursesPage;
