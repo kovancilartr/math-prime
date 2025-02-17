@@ -67,16 +67,16 @@ const ChapterSidebarItem = ({ isLocked }: ChapterSidebarItemProps) => {
             className="last:border-b-0"
           >
             <div className="overflow-hidden">
-              <AccordionTrigger className="flex flex-row items-center gap-x-1 py-2 px-2 bg-stone-100">
+              <AccordionTrigger className="flex flex-row items-center gap-x-1 py-2 px-2">
                 <div className="flex flex-row items-center gap-x-1">
-                  <Pin className="h-4 w-4" />
+                  <Pin className="h-4 w-4 text-red-600 dark:text-white" />
                   <h3 className="text-lg font-semibold dark:text-white border-gray-200">
                     {section.title}
                   </h3>
                 </div>
               </AccordionTrigger>
 
-              <AccordionContent className="pb-0 dark:bg-slate-700">
+              <AccordionContent className="pb-0">
                 {section.chapter.length > 0 ? (
                   section.chapter.map((chapter: any) => {
                     const isCompleted = chapter?.completedLesson?.some(
@@ -96,9 +96,9 @@ const ChapterSidebarItem = ({ isLocked }: ChapterSidebarItemProps) => {
                         onClick={() => onClick(chapter.id)}
                         type="button"
                         className={cn(
-                          "flex w-full items-center gap-x-2 text-slate-500 text-sm font-[500] pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20",
+                          "flex w-full items-center gap-x-2 text-slate-500 text-sm font-[600] pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20",
                           isChapterActive(chapter.id) &&
-                            "bg-slate-200/20 text-slate-700 hover:bg-slate-200/20 hover:text-slate-700",
+                            "bg-slate-200/20 text-black hover:bg-slate-200/20 hover:text-slate-700",
                           isCompleted &&
                             "text-emerald-700 hover:text-emerald-700",
                           isCompleted &&
@@ -106,7 +106,7 @@ const ChapterSidebarItem = ({ isLocked }: ChapterSidebarItemProps) => {
                             "bg-emerald-200/20"
                         )}
                       >
-                        <div className="flex items-center gap-x-2 py-4 text-xs">
+                        <div className="flex items-center gap-x-2 py-4 text-xs dark:text-white">
                           <Icon
                             size={22}
                             className={cn(
