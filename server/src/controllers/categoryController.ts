@@ -19,6 +19,7 @@ export const getCategories = async (
         courses: {
           include: {
             categories: true,
+            courseEnrollment: true,
           },
         },
       };

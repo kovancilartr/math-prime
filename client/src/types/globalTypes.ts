@@ -42,7 +42,7 @@ export type Courses = {
   createdAt: string;
   updatedAt: string;
   Section: Sections[];
-  CourseEnrollment: CourseEnrollment[];
+  courseEnrollment: CourseEnrollment[];
   Rating: Rating[];
   categories: Category[];
 };

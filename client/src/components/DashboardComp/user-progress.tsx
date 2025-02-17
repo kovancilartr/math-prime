@@ -6,9 +6,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
 import LoadingSpinner from "../loading-spinner";
-import toast from "react-hot-toast";
+import { cn } from "@/lib/utils";
 
-const UserProgress = () => {
+interface UserProgressProps {
+  className?: string;
+  courseIdProps?: string;
+}
+
+const UserProgress = ({ className, courseIdProps }: UserProgressProps) => {
   const { courseId, chapterId } = useParams();
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
@@ -19,7 +24,9 @@ const UserProgress = () => {
     data: courseData,
     isLoading: isCourseLoading,
     isError: isCourseError,
-  } = fetchCourseDetailsPageActions(courseId as string);
+  } = fetchCourseDetailsPageActions(
+    courseId ? (courseId as string) : (courseIdProps as string)
+  );
 
   const allChapters =
     courseData?.data?.flatMap((course: any) =>
@@ -33,7 +40,11 @@ const UserProgress = () => {
     totalChapters > 0 ? (completedCount / totalChapters) * 100 : 0;
 
   if (isCourseLoading) {
-    return <LoadingSpinner />;
+    if (!courseIdProps) {
+      return <LoadingSpinner />;
+    } else {
+      return <Progress value={0} className="w-[40%]" />;
+    }
   }
   if (isCourseError) {
     return <p>Verileri çekerken bir hata oluştu.</p>;
@@ -44,7 +55,7 @@ const UserProgress = () => {
         <h2 className="cursor-default">Tebrikler! Kurs Tamamlandı 🎉</h2>
       ) : (
         <>
-          <Progress value={completionPercentage} className="w-[40%]" />
+          <Progress value={completionPercentage} className={cn("w-[40%]", className)} />
           <h2 className="text-xs">
             Tamamlanma Yüzdesi:{" "}
             <span className="font-bold text-base">{completionPercentage}%</span>

@@ -1,14 +1,28 @@
+"use client";
+
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Category, Courses } from "@/types/globalTypes";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 import noCourseAvatar from "../../../../../../public/images/banner-2.jpg";
+import UserProgress from "@/components/DashboardComp/user-progress";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Button } from "@/components/ui/button";
+import { User, UserPlus } from "lucide-react";
 
 interface CourseCardProps {
   data: Courses;
 }
 const CourseCard = ({ data }: CourseCardProps) => {
+  const { user } = useAuthStore();
+  const currentUserId = user?.id;
+
+  const enrollmentCourse =
+    data?.courseEnrollment?.some(
+      (enrollment) => enrollment.userId === currentUserId
+    ) || false;
+
   return (
     <>
       <Link href={`/courses/details/${data.id}`}>
@@ -49,6 +63,19 @@ const CourseCard = ({ data }: CourseCardProps) => {
               </div>
 
               {/* Card Price or Purchase Button */}
+              {enrollmentCourse ? (
+                <div className="flex flex-col items-center justify-center">
+                  <UserProgress courseIdProps={data.id} className="w-[80%]" />
+                </div>
+              ) : (
+                <Button
+                  variant="ghost"
+                  className="w-full text-base dark:hover:bg-slate-700"
+                >
+                  <UserPlus className="h-4 w-4" />
+                  Kursa Kayıt Ol
+                </Button>
+              )}
             </div>
           </div>
         </div>
