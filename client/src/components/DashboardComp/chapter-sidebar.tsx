@@ -9,7 +9,7 @@ const ChapterSidebar = () => {
   return (
     <aside
       className={cn(
-        "hidden lg:flex h-screen w-96 bg-myColor1-100 dark:bg-myColor1-400 border-r-2 border-slate-200 dark:border-slate-700",
+        "hidden lg:flex h-screen w-96 bg-myColor1-100 dark:bg-gradient-to-tr dark:from-gray-800 dark:to-gray-700 border-r border-slate-100 dark:border-slate-700",
         chapterSideBarVisible === false && "lg:hidden"
       )}
     >

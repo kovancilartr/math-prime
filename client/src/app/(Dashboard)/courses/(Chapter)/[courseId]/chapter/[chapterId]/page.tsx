@@ -13,6 +13,7 @@ import {
   deleteCompletedChapterServices,
 } from "@/services/chapterServices";
 import toast from "react-hot-toast";
+import UserProgress from "@/components/DashboardComp/user-progress";
 
 const ChapterPage = () => {
   const { courseId, chapterId } = useParams();
@@ -56,6 +57,7 @@ const ChapterPage = () => {
     },
   });
 
+  console.log("courseData", courseData);
   // courseData'dan chapterId ile eşleşen veriyi almak
   const chapterData = courseData?.data
     ?.flatMap((course: any) =>
@@ -64,6 +66,21 @@ const ChapterPage = () => {
       )
     )
     .find(Boolean); // Eğer null veya undefined dönerse, bir sonraki öğeyi bul
+
+  // Gerçek tamamlanan ders ID'leri ile değiştirin
+
+  const allChapters =
+    courseData?.data?.flatMap((course: any) =>
+      course.section.flatMap((section: any) => section.chapter)
+    ) || [];
+  const completedCount = allChapters.filter((chapter) =>
+    chapter.completedLesson.some((lesson) => lesson.userId === currentUserId)
+  ).length;
+  const totalChapters = allChapters.length;
+  const completionPercentage =
+    totalChapters > 0 ? (completedCount / totalChapters) * 100 : 0;
+
+  console.log("Tamamlanma Yüzdesi:", completionPercentage);
 
   // Kullanıcının dersi tamamlayıp tamamlamadığını kontrol etme
   const isCompleted = chapterData?.completedLesson?.some(
